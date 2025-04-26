@@ -59,6 +59,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
         }.foregroundColor(.orange)
     }
     
+    // some changes...
     
     var themeChoosers: some View {
         HStack{
