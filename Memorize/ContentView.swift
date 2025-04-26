@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// some changes ....
 
 // behave like a View
 struct ContentView: View { // 这里的View并不是类型，而是协议
@@ -24,7 +23,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
     }
     
     // 每组表情12个
-    @State var emojis: Array<String> = ["👻", "😈", "🎃", "🕷️", "💀", "❄️", "🧙", "🙀", "👹", "😱", "☠️", "🍭"]
+    @State var emojis: Array<String> = []
     
     let holloweenEmojis: Array<String> = ["👻", "😈", "🎃", "🕷️", "💀", "❄️", "🧙", "🙀", "👹", "😱", "☠️", "🍭"]
     
@@ -36,7 +35,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
     
     
     
-    @State var cardCount: Int = 4
+    @State var cardCount: Int = 5
     
     var body: some View {
         VStack {
@@ -46,16 +45,16 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
             }
             Spacer()
             themeChoosers
-            Spacer()
-            cardCountAdjusters
+//            Spacer()
+//            cardCountAdjusters
         }
         .padding()
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {  // 这里应该是尾随闭包，并且省略了return语句
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: emojis[index], isFacedUp: true)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]) {  // 这里应该是尾随闭包，并且省略了return语句
+            ForEach(0..<emojis.count, id: \.self) { index in
+                CardView(content: emojis[index], isFacedUp: false)
                     .aspectRatio(2/3, contentMode: .fit)
             }
         }.foregroundColor(.orange)
@@ -64,25 +63,35 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
     
     var themeChoosers: some View {
         HStack{
-            themeChooser(choose: Themes.animalsTheme, symbol: "rectangle.stack.badge.minus.fill")
+            VStack {
+                themeChooser(choose: Themes.animalsTheme, symbol: "cat")
+                Text("animal").font(.body)
+            }
             Spacer()
-            themeChooser(choose: Themes.holloweenTheme, symbol: "rectangle.stack.badge.minus.fill")
+            VStack {
+                themeChooser(choose: Themes.holloweenTheme, symbol: "flame")
+                Text("holloween").font(.body)
+            }
             Spacer()
-            themeChooser(choose: Themes.vehicleTheme, symbol: "rectangle.stack.badge.minus.fill")
+            VStack {
+                themeChooser(choose: Themes.vehicleTheme, symbol: "car")
+                Text("vehicle").font(.body)
+            }
         }
         .imageScale(.large)
-        .font(.largeTitle)
+        .font(.body)
+        .foregroundColor(.blue)
     }
     
     func themeChooser(choose theme: Themes, symbol: String) -> some View {
         Button(action: {
             switch theme {
             case .animalsTheme:
-                emojis = animalsEmojis
+                emojis = animalsEmojis.shuffled()
             case .holloweenTheme:
-                emojis = holloweenEmojis
+                emojis = holloweenEmojis.shuffled()
             case .vehicleTheme:
-                emojis = vehiclesEmojis
+                emojis = vehiclesEmojis.shuffled()
             }
         }, label: {
             Image(systemName: symbol)
@@ -119,7 +128,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
 
 struct CardView: View {
     let content: String
-    @State var isFacedUp = true
+    @State var isFacedUp = false
     
     var body: some View {
         // 这里也是一个尾随闭包 ZStack的最后一个输入参数是一个闭包
