@@ -59,11 +59,6 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
         }.foregroundColor(.orange)
     }
     
-    /* Add at least 3 “theme choosing” buttons to your UI, each of which causes all of the
-        cards’ emojis to be replaced with new emojis from the chosen theme. A “theme” just
-        means a collection of related emojis (for example, in lecture we basically had a
-        “Halloween” theme).
-    */
     
     var themeChoosers: some View {
         HStack{
