@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// some changes ....
+
 // behave like a View
 struct ContentView: View { // 这里的View并不是类型，而是协议
     // some View是body的类型，后面跟着的大括号是计算属性
@@ -58,8 +60,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
             }
         }.foregroundColor(.orange)
     }
-    
-    // some changes...
+
     
     var themeChoosers: some View {
         HStack{
