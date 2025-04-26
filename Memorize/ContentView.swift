@@ -59,7 +59,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
         }.foregroundColor(.orange)
     }
     
-    // some changes... 
+    // some changes...
     
     var themeChoosers: some View {
         HStack{
@@ -97,7 +97,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
         .imageScale(.large)
         .font(.largeTitle)
     }
-    
+     
     func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
         Button(action: {
             cardCount += offset
