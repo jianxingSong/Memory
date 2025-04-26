@@ -52,7 +52,7 @@ struct ContentView: View { // 这里的View并不是类型，而是协议
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]) {  // 这里应该是尾随闭包，并且省略了return语句
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {  // 这里应该是尾随闭包，并且省略了return语句
             ForEach(0..<emojis.count, id: \.self) { index in
                 CardView(content: emojis[index], isFacedUp: false)
                     .aspectRatio(2/3, contentMode: .fit)
