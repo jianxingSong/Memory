@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memory
 //
 //  Created by 宋健星 on 2025/4/9.
@@ -9,12 +9,14 @@ import SwiftUI
 
 
 // behave like a View
-struct ContentView: View { // 这里的View并不是类型，而是协议
+struct EmojiMemoryGameView: View { // 这里的View并不是类型，而是协议
     // some View是body的类型，后面跟着的大括号是计算属性
     // 计算属性意味着body的值并非存储在某个地方，而是每次需要body的值的时候，计算
     // 属性中的代码将会运行，这也意味着每次获取body所获取的并非是固定的；
     // 并且，计算属性只能计算出变量的值，因此相当于该属性是只读的
     // some View意味着这个计算属性可以返回任何一个behave like a View的结构
+    
+    var viewModel: EmojiMemoryGame
     
     enum Themes{
         case holloweenTheme
@@ -157,5 +159,5 @@ struct CardView: View {
 
 
 #Preview {
-    ContentView()
+    EmojiMemoryGameView()
 }
