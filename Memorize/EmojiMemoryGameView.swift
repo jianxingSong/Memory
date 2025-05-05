@@ -16,121 +16,44 @@ struct EmojiMemoryGameView: View { // 这里的View并不是类型，而是协�
     // 并且，计算属性只能计算出变量的值，因此相当于该属性是只读的
     // some View意味着这个计算属性可以返回任何一个behave like a View的结构
     
-    var viewModel: EmojiMemoryGame
-    
-    enum Themes{
-        case holloweenTheme
-        case vehicleTheme
-        case animalsTheme
-    }
-    
-    // 每组表情12个
-    @State var emojis: Array<String> = []
-    
-    let holloweenEmojis: Array<String> = ["👻", "😈", "🎃", "🕷️", "💀", "❄️", "🧙", "🙀", "👹", "😱", "☠️", "🍭"]
-    
-    let vehiclesEmojis: Array<String> = ["🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓",
-        "🚑", "🚒", "🚐", "🛻", "🚚"]
-    
-    let animalsEmojis: Array<String> = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻",
-        "🐼", "🐻‍❄️", "🐨", "🐯", "🦁"]
-    
-    
-    
-    @State var cardCount: Int = 5
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     var body: some View {
         VStack {
             Text("Memorize!").font(.largeTitle)
             ScrollView {
                 cards
+                    .animation(.default, value: viewModel.cards)
             }
             Spacer()
-            themeChoosers
-//            Spacer()
-//            cardCountAdjusters
+            Button("shuffle") {
+                viewModel.shffule()
+            }
         }
         .padding()
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {  // 这里应该是尾随闭包，并且省略了return语句
-            ForEach(0..<emojis.count, id: \.self) { index in
-                CardView(content: emojis[index], isFacedUp: false)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing:  0) {  // 这里应该是尾随闭包，并且省略了return语句
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2/3, contentMode: .fit)
-            }
-        }.foregroundColor(.orange)
-    }
-
-    
-    var themeChoosers: some View {
-        HStack{
-            VStack {
-                themeChooser(choose: Themes.animalsTheme, symbol: "cat")
-                Text("animal").font(.body)
-            }
-            Spacer()
-            VStack {
-                themeChooser(choose: Themes.holloweenTheme, symbol: "flame")
-                Text("holloween").font(.body)
-            }
-            Spacer()
-            VStack {
-                themeChooser(choose: Themes.vehicleTheme, symbol: "car")
-                Text("vehicle").font(.body)
+                    .padding(4)
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
             }
         }
-        .imageScale(.large)
-        .font(.body)
-        .foregroundColor(.blue)
-    }
-    
-    func themeChooser(choose theme: Themes, symbol: String) -> some View {
-        Button(action: {
-            switch theme {
-            case .animalsTheme:
-                emojis = animalsEmojis.shuffled()
-            case .holloweenTheme:
-                emojis = holloweenEmojis.shuffled()
-            case .vehicleTheme:
-                emojis = vehiclesEmojis.shuffled()
-            }
-        }, label: {
-            Image(systemName: symbol)
-        })
-    }
-    
-    var cardCountAdjusters: some View {
-        HStack {
-            cardRemover
-            Spacer()
-            cardAdder
-        }
-        .imageScale(.large)
-        .font(.largeTitle)
-    }
-     
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var cardRemover: some View {
-        return cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        return cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
+        .foregroundColor(.orange)
     }
 }
 
 struct CardView: View {
-    let content: String
-    @State var isFacedUp = false
+    let card: MemoryGame<String>.Card
+    
+    init(_ card: MemoryGame<String>.Card) {
+        self.card = card
+    }
     
     var body: some View {
         // 这里也是一个尾随闭包 ZStack的最后一个输入参数是一个闭包
@@ -141,14 +64,15 @@ struct CardView: View {
             Group {
                 base.fill(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text(content).font(.largeTitle)
+                Text(card.content)
+                    .font(.system(size: 200))
+                    .minimumScaleFactor(0.01)
+                    .aspectRatio(1, contentMode: .fit)
             }
-            .opacity(isFacedUp ? 1 : 0)
-            base.fill().opacity(isFacedUp ? 0 : 1)
+            .opacity(card.isFaceUp ? 1 : 0)
+            base.fill().opacity(card.isFaceUp ? 0 : 1)
         }
-        .onTapGesture {
-            isFacedUp.toggle()
-        }
+        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
     }
 }
 
@@ -159,5 +83,5 @@ struct CardView: View {
 
 
 #Preview {
-    EmojiMemoryGameView()
+    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
 }
